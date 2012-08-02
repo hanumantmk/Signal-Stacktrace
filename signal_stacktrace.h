@@ -3,6 +3,7 @@
 
 #define _GNU_SOURCE
 
+#include <string.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <execinfo.h>
