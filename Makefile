@@ -3,7 +3,7 @@ default: AUTOMAKEFILE_DEFAULT
 -include AutoMakefile
 
 LFLAGS+= -lbfd
-CFLAGS+= -Wall -Werror -ggdb3 -O0
+CFLAGS+= -Wall -Werror -ggdb3 -O0 -rdynamic
 TARGETS=test
 
 clean: AUTOMAKEFILE_CLEAN

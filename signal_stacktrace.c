@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <execinfo.h>
 
-#include "backtrace_symbols.h"
 #include "signal_stacktrace.h"
 
 #define __USE_GNU
@@ -20,20 +19,12 @@ static void sig_handler(int signal, siginfo_t * si, void * secret)
   ucontext_t * uc = secret;
 
   void * trace[STACK_DEPTH];
-  char ** messages = NULL;
 
-  int i;
   int trace_size = backtrace(trace, STACK_DEPTH);
 
   trace[1] = (void *)uc->uc_mcontext.gregs[REG_EIP];
 
-  messages = backtrace_symbols(trace, trace_size);
-
-  fprintf(stderr, "Signal Stacktrace triggered by %d:\n", signal);
-
-  for (i = 1; i < trace_size; i++) {
-    fprintf(stderr, "  %s\n", messages[i]);
-  }
+  backtrace_symbols_fd(trace + 1, trace_size - 1, 1);
 
   if (signal_stacktrace_actions[signal]) exit(signal);
 }
