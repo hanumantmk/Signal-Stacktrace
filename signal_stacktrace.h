@@ -1,22 +1,22 @@
 #ifndef SIGNAL_STACKTRACE_H
 #define SIGNAL_STACKTRACE_H
 
+#define _GNU_SOURCE
+
 #include <signal.h>
 #include <stdlib.h>
 #include <execinfo.h>
 
-#ifdef __USE_GNU
-#define SIGNAL_STACKTRACE_HAD_USE_GNU
-#endif
-
-#define __USE_GNU
 #include <ucontext.h>
 
-#ifndef SIGNAL_STACKTRACE_HAD_USE_GNU
-#undef __USE_GNU
+#define STACK_DEPTH 32
+
+#if __WORDSIZE == 64
+#define SIGNAL_STACKTRACE_IP_REG REG_RIP
+#else
+#define SIGNAL_STACKTRACE_IP_REG REG_EIP
 #endif
 
-#define STACK_DEPTH 32
 
 typedef struct signal_stacktrace_signal {
   int signal;
@@ -33,7 +33,7 @@ static void signal_stacktrace_handler(int signal, siginfo_t * si, void * secret)
 
   int trace_size = backtrace(trace, STACK_DEPTH);
 
-  trace[1] = (void *)uc->uc_mcontext.gregs[REG_EIP];
+  trace[1] = (void *)uc->uc_mcontext.gregs[SIGNAL_STACKTRACE_IP_REG];
 
   backtrace_symbols_fd(trace + 1, trace_size - 1, 1);
 
