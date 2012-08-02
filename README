@@ -1,0 +1,5 @@
+signal_stacktrace.h is an all in one header that installs a signal handler for
+your process that provides a backtrace when called.  It assumes that you're
+running on linux and X86 32/64 bit linux at that.
+
+Look at test.c for some example code
